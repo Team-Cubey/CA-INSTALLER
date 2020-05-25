@@ -8,10 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("7za.dll")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("7za.exe")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("7zxa.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("microsoft.windowsapicodepack.dll")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("microsoft.windowsapicodepack.shell.dll")]
 
 

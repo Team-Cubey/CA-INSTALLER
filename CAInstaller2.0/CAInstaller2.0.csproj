@@ -109,13 +109,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="7za.dll" />
-    <Content Include="7za.exe" />
-    <Content Include="7zxa.dll" />
     <Content Include="Microsoft.WindowsAPICodePack.dll" />
-    <Content Include="Microsoft.WindowsAPICodePack.Shell.dll" />
     <Resource Include="ca-logo.png" />
-    <Resource Include="cubey-stare.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
