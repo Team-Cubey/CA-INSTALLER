@@ -151,9 +151,9 @@ namespace CAInstaller2._0
 
             Process.Start(installloc + @"\Cubey's Adventures.exe"); // start game
 
-            System.Environment.Exit(1); // exit
+            System.IO.File.Delete(temp + @"ca.zip"); // then remove zip
 
-            System.IO.File.Delete(temp + @"ca.zip"); // then remove zip, im an idiot
+            System.Environment.Exit(1); // exit
         }
 
         public void CreateShortcut(string shortcutName, string shortcutPath, string targetFileLocation)

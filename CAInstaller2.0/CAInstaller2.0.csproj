@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{367B3F56-0B1D-46E1-9988-5D522F90012D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CAInstaller2._0</RootNamespace>
-    <AssemblyName>CAInstaller2.0</AssemblyName>
+    <RootNamespace>CAInstaller</RootNamespace>
+    <AssemblyName>CA-Installer</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,6 +35,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ca-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -109,6 +112,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="ca-icon.ico" />
     <Content Include="Microsoft.WindowsAPICodePack.dll" />
     <Resource Include="ca-logo.png" />
   </ItemGroup>
