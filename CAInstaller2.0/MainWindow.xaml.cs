@@ -129,7 +129,7 @@ namespace CAInstaller2._0
             webClient3.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-icon.ico"), temp + @"ca.ico"); // download the ico for the shortcut
 
             WebClient webClient = new WebClient();
-            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latestd.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
 
             WebClient webClient2 = new WebClient();
             webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
