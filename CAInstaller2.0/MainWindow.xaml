@@ -8,7 +8,7 @@
         Title="Install Cubey's Adventures" Height="278" Width="430">
     <Grid>
         <Grid HorizontalAlignment="Center" Margin="-156,0" Width="734">
-            <ProgressBar Name="progrss" HorizontalAlignment="Center" Height="10" Margin="192,98,194,0" VerticalAlignment="Top" Width="348" ValueChanged="ProgressBar_ValueChanged" Foreground="#FF8D8D8D" Background="White"/>
+            <ProgressBar Name="progrss" HorizontalAlignment="Center" Height="10" Margin="192,98,194,0" VerticalAlignment="Top" Width="348" Foreground="#FF8D8D8D" Background="White"/>
             <TextBlock Name="aainfo" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Installing to somewhere/somewhere/somewhere/somewhere/somewhere/somewhere in 5 seconds" VerticalAlignment="Top" Margin="30,160,32,0" Height="34" Width="337" TextAlignment="Center" Foreground="#FF767474"/>
             <TextBlock x:Name="change" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Margin="30,198,32,0" Height="17" Width="337" TextAlignment="Center" Foreground="#FF767474"><Run Text="Click here to change install location"/><Run Text=" "/><InlineUIContainer>
                    
