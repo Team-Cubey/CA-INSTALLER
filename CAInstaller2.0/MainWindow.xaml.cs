@@ -8,6 +8,7 @@ using IWshRuntimeLibrary;
 using System.Timers;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace CAInstaller2._0
 {
@@ -21,6 +22,37 @@ namespace CAInstaller2._0
 
     public partial class MainWindow : Window
     {
+        static bool is64BitProcess = (IntPtr.Size == 8);
+        static bool is64BitOperatingSystem = is64BitProcess || InternalCheckIsWow64();
+
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsWow64Process(
+            [In] IntPtr hProcess,
+            [Out] out bool wow64Process
+        );
+
+        public static bool InternalCheckIsWow64()
+        {
+            if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
+                Environment.OSVersion.Version.Major >= 6)
+            {
+                using (Process p = Process.GetCurrentProcess())
+                {
+                    bool retVal;
+                    if (!IsWow64Process(p.Handle, out retVal))
+                    {
+                        return false;
+                    }
+                    return retVal;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public string installloc;
         private static System.Timers.Timer aTimer;
         public int countdown;
@@ -97,14 +129,15 @@ namespace CAInstaller2._0
             webClient3.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-icon.ico"), temp + @"ca.ico"); // download the ico for the shortcut
 
             WebClient webClient = new WebClient();
-            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latestd.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
 
             WebClient webClient2 = new WebClient();
             webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
             webClient2.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
             string[] downloc = System.IO.File.ReadAllLines(temp + @"ca-latest.txt"); // get the link
-            //MessageBox.Show(downloc[0]);
             webClient2.DownloadFileAsync(new Uri(downloc[0]), temp + @"ca.zip"); // download latest version
+            //MessageBox.Show(downloc[0]);
+           
         }
 
 
@@ -130,11 +163,21 @@ namespace CAInstaller2._0
 
             string temp = System.IO.Path.GetTempPath(); // get temp
 
-            if (Directory.Exists(installloc)) // checks if the install location exists, then deletes it.
+            if (Directory.Exists(installloc)) // checks if the install location exists, then deletes the cubey files
             {
-                Directory.Delete(installloc, true); // deletes. this should 100% NOT happen. gonna change it soon
+                System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
+                System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
+                System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
+                System.IO.File.Delete(installloc + @"\ca.ico");
+                System.IO.File.Delete(installloc + @"\UnityCrashHandler32.exe");
+
+                Directory.Delete(installloc + @"\MonoBleedingEdge", true);
+                Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
             }
-            Directory.CreateDirectory(installloc); // create the install directory
+            else
+            {
+                Directory.CreateDirectory(installloc); // create the install directory
+            }
             this.Dispatcher.Invoke(() => // set the text to inform the user that we're now unzipping
             {
                 aainfo.Text = "Unzipping to " + installloc + "...";
