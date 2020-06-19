@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CAInstaller2._0"
        
-        Title="Install Cubey's Adventures" Height="278" Width="430">
+        Title="Install Cubey's Adventures" Height="278" Width="430" ResizeMode="NoResize">
     <Grid>
         <Grid HorizontalAlignment="Center" Margin="-156,0" Width="734">
             <ProgressBar Name="progrss" HorizontalAlignment="Center" Height="10" Margin="192,98,194,0" VerticalAlignment="Top" Width="348" Foreground="#FF8D8D8D" Background="White"/>
