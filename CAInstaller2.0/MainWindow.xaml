@@ -20,7 +20,7 @@
             </TextBlock>
 
 
-            <Image Margin="180,29,182,0" Source="ca-logo.png" Stretch="Fill" VerticalAlignment="Top" HorizontalAlignment="Center" Height="33" Width="372"/>
+            <Image Margin="163,28,165,0" Source="p-logo@2x.png" Stretch="Fill" VerticalAlignment="Top" HorizontalAlignment="Center" Height="39" Width="406"/>
         </Grid>
     </Grid>
 </Window>

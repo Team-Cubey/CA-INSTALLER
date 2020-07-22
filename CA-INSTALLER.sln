@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAInstaller2.0", "CAInstaller2.0\CAInstaller2.0.csproj", "{367B3F56-0B1D-46E1-9988-5D522F90012D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CA-INSTALLER", "CAInstaller2.0\CA-INSTALLER.csproj", "{367B3F56-0B1D-46E1-9988-5D522F90012D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

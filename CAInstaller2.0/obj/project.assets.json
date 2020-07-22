@@ -223,9 +223,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hubzi\\source\\repos\\CAInstaller2.0\\CA-INSTALLER\\CAInstaller2.0\\CAInstaller2.0.csproj",
-      "projectName": "CAInstaller2.0",
-      "projectPath": "C:\\Users\\hubzi\\source\\repos\\CAInstaller2.0\\CA-INSTALLER\\CAInstaller2.0\\CAInstaller2.0.csproj",
+      "projectUniqueName": "C:\\Users\\hubzi\\source\\repos\\CAInstaller2.0\\CA-INSTALLER\\CAInstaller2.0\\CA-INSTALLER.csproj",
+      "projectName": "CA-INSTALLER",
+      "projectPath": "C:\\Users\\hubzi\\source\\repos\\CAInstaller2.0\\CA-INSTALLER\\CAInstaller2.0\\CA-INSTALLER.csproj",
       "packagesPath": "C:\\Users\\hubzi\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\hubzi\\source\\repos\\CAInstaller2.0\\CA-INSTALLER\\CAInstaller2.0\\obj\\",
       "projectStyle": "PackageReference",

@@ -112,7 +112,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="p-logo%402x.png" />
     <Resource Include="ca-icon.ico" />
+    <Resource Include="ca-logo-new.png" />
+    <Resource Include="cainst.png" />
     <Content Include="Microsoft.WindowsAPICodePack.dll" />
     <Resource Include="ca-logo.png" />
   </ItemGroup>
