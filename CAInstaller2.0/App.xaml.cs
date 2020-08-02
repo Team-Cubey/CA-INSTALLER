@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
+
 namespace CAInstaller2._0
 {
     /// <summary>
@@ -13,5 +14,6 @@ namespace CAInstaller2._0
     /// </summary>
     public partial class App : Application
     {
+        
     }
 }

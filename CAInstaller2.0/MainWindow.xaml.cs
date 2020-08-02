@@ -8,6 +8,7 @@ using IWshRuntimeLibrary;
 using System.Timers;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace CAInstaller2._0
 {
@@ -28,16 +29,11 @@ namespace CAInstaller2._0
         public MainWindow()
         {
             InitializeComponent();
-
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // gets appdata for later
 
             installloc = appdata + @"\cubeyrewritten\"; // sets the install location
-
-            
-
             SetTimer(); // starts the countdown...
             countdown = 6; // for 6 seconds
-
             aainfo.Text = "Installing to " + installloc + " in " + countdown + " seconds"; // sets the text first time
         }
 
@@ -51,9 +47,6 @@ namespace CAInstaller2._0
             aTimer.AutoReset = true; 
             aTimer.Enabled = true;
         }
-
-
-
 
         public void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -97,6 +90,7 @@ namespace CAInstaller2._0
             webClient3.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-icon.ico"), temp + @"ca.ico"); // download the ico for the shortcut
 
             WebClient webClient = new WebClient();
+            System.IO.File.Delete(temp + @"ca-latest.txt");
             webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
 
             WebClient webClient2 = new WebClient();
@@ -108,12 +102,12 @@ namespace CAInstaller2._0
            
         }
 
-
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             this.Dispatcher.Invoke(() =>
             {
                 progrss.Value = e.ProgressPercentage; // update progress bar
+                aainfo.Text = "Downloading the latest version: " + e.ProgressPercentage + "%"; // update the text
             });
         }
 
@@ -121,7 +115,6 @@ namespace CAInstaller2._0
         {
             //MessageBox.Show("Download completed!");
         }
-
         
         private void CompletedCA(object sender, AsyncCompletedEventArgs e)
         {
@@ -137,8 +130,6 @@ namespace CAInstaller2._0
                 System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
                 System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
                 System.IO.File.Delete(installloc + @"\ca.ico");
-                System.IO.File.Delete(installloc + @"\UnityCrashHandler32.exe");
-
                 Directory.Delete(installloc + @"\MonoBleedingEdge", true);
                 Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
             }
@@ -153,6 +144,7 @@ namespace CAInstaller2._0
             ZipFile.ExtractToDirectory(temp + @"ca.zip", installloc); // extract it to the install location
             System.IO.File.Move(temp + @"ca.ico", appdata + @"\cubeyrewritten\ca.ico"); // move the ico
 
+            System.IO.File.Delete(appdata + @"\Microsoft\Windows\Start Menu\Programs\Cubey's Adventures.lnk");
             CreateShortcut("Cubey's Adventures", appdata + @"\Microsoft\Windows\Start Menu\Programs", appdata + @"\cubeyrewritten\Cubey's Adventures.exe"); // create a shortcut
 
             this.Dispatcher.Invoke(() =>
@@ -173,8 +165,7 @@ namespace CAInstaller2._0
             WshShell shell = new WshShell();
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
                 
-
-            shortcut.Description = "Cubey";   // The description of the shortcut
+            shortcut.Description = "Cubey's Adventures";   // The description of the shortcut
             shortcut.IconLocation = installloc + @"\ca.ico";           // The icon of the shortcut
             shortcut.TargetPath = targetFileLocation;                 // The path of the file that will launch when the shortcut is run
             shortcut.Save();                                    // Save the shortcut

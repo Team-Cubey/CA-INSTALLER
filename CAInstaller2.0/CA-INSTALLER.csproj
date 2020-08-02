@@ -51,6 +51,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp">
       <Private>False</Private>
@@ -114,10 +115,7 @@
   <ItemGroup>
     <Resource Include="p-logo%402x.png" />
     <Resource Include="ca-icon.ico" />
-    <Resource Include="ca-logo-new.png" />
-    <Resource Include="cainst.png" />
     <Content Include="Microsoft.WindowsAPICodePack.dll" />
-    <Resource Include="ca-logo.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
