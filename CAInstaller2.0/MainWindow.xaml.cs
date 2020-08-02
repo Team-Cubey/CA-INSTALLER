@@ -37,7 +37,6 @@ namespace CAInstaller2._0
             aainfo.Text = "Installing to " + installloc + " in " + countdown + " seconds"; // sets the text first time
         }
 
-
         private void SetTimer()
         {
             // Create a timer with a 1 second interval.
@@ -99,7 +98,6 @@ namespace CAInstaller2._0
             string[] downloc = System.IO.File.ReadAllLines(temp + @"ca-latest.txt"); // get the link
             webClient2.DownloadFileAsync(new Uri(downloc[0]), temp + @"ca.zip"); // download latest version
             //MessageBox.Show(downloc[0]);
-           
         }
 
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
