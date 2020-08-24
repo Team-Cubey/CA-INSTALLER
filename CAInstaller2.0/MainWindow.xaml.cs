@@ -31,7 +31,6 @@ namespace CAInstaller2._0
 
         public MainWindow()
         {
-            
             InitializeComponent();
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // gets appdata for later
 
@@ -218,7 +217,7 @@ namespace CAInstaller2._0
             }
             catch (Exception)
             {
-
+                return;
             }
         }
     }
