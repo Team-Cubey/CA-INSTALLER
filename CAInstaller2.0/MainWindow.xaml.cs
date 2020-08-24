@@ -8,7 +8,8 @@ using IWshRuntimeLibrary;
 using System.Timers;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace CAInstaller2._0
 {
@@ -25,16 +26,30 @@ namespace CAInstaller2._0
         public string installloc;
         private static System.Timers.Timer aTimer;
         public int countdown;
+        private Border myBorder1;
+        public bool enoughspace = true;
 
         public MainWindow()
         {
+            
             InitializeComponent();
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // gets appdata for later
 
             installloc = appdata + @"\cubeyrewritten\"; // sets the install location
-            SetTimer(); // starts the countdown...
-            countdown = 6; // for 6 seconds
-            aainfo.Text = "Installing to " + installloc + " in " + countdown + " seconds"; // sets the text first time
+            DriveInfo Drive = new DriveInfo(installloc.Substring(0, 1));
+            
+            if (Drive.AvailableFreeSpace > 600000000)
+            {
+                SetTimer(); // starts the countdown...
+                countdown = 6; // for 6 seconds
+                aainfo.Text = "Installing to " + installloc + "\nin " + countdown + " seconds"; // sets the text first time
+            }
+            else
+            {
+                aTimer.Enabled = false;
+                aainfo.Text = "There is not enough space on the selected drive (600mb). Please make some space and restart the installer, or select another drive";
+                enoughspace = false;
+            }
         }
 
         private void SetTimer()
@@ -55,10 +70,20 @@ namespace CAInstaller2._0
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                installloc = dialog.FileName; // when they respond ok we set the install location to where they want to install
+                DriveInfo Drive = new DriveInfo(dialog.FileName.Substring(0,1));
+                if (Drive.AvailableFreeSpace > 600000000)
+                {
+                    installloc = dialog.FileName; // when they respond ok we set the install location to where they want to install
+                    SetTimer(); // reset the timer
+                    countdown = 6;
+                }
+                else
+                {
+                    aTimer.Enabled = false;
+                    aainfo.Text = "There is not enough space on the selected drive (600mb). Please make some space and restart the installer, or select another drive";
+                    enoughspace = false;
+                }
             }
-            SetTimer(); // reset the timer
-            countdown = 6;
         }
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -66,7 +91,7 @@ namespace CAInstaller2._0
             countdown -= 1;
             this.Dispatcher.Invoke(() =>
             {
-                aainfo.Text = "Installing to " + installloc + " in " + countdown + " seconds"; // set the text
+                aainfo.Text = "Installing to " + installloc + "\nin " + countdown + " seconds"; // set the text
             });
             if(countdown == 0){ // when the timer is done
                 aTimer.Enabled = false; // disable timer
@@ -75,7 +100,7 @@ namespace CAInstaller2._0
                 {
                     ChangeButton.IsEnabled = false; // disablethe change button
                     aainfo.Text = "Downloading the latest version..."; // update the text
-                    change.Text = ""; // remove the "click here" text
+                    change.Foreground = new SolidColorBrush(Color.FromArgb(170, 116, 116, 116));
                 });
                 install(); // install time
             }
@@ -124,12 +149,28 @@ namespace CAInstaller2._0
 
             if (Directory.Exists(installloc)) // checks if the install location exists, then deletes the cubey files
             {
-                System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
-                System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
-                System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
-                System.IO.File.Delete(installloc + @"\ca.ico");
-                Directory.Delete(installloc + @"\MonoBleedingEdge", true);
-                Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
+                if (!Directory.Exists(installloc + @"\MonoBleedingEdge"))
+                {
+                    // wipe the IL2CPP version
+                    System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
+                    System.IO.File.Delete(installloc + @"\GameAssembly.dll");
+                    System.IO.File.Delete(installloc + @"\baselib.dll");
+                    System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
+                    System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
+                    System.IO.File.Delete(installloc + @"\ca.ico");
+                    Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
+                }
+                else {
+                    // wip the MONO version with il2cpp just in case lol
+                    System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
+                    System.IO.File.Delete(installloc + @"\GameAssembly.dll");
+                    System.IO.File.Delete(installloc + @"\baselib.dll");
+                    System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
+                    System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
+                    System.IO.File.Delete(installloc + @"\ca.ico");
+                    Directory.Delete(installloc + @"\MonoBleedingEdge", true);
+                    Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
+                }
             }
             else
             {
@@ -167,6 +208,18 @@ namespace CAInstaller2._0
             shortcut.IconLocation = installloc + @"\ca.ico";           // The icon of the shortcut
             shortcut.TargetPath = targetFileLocation;                 // The path of the file that will launch when the shortcut is run
             shortcut.Save();                                    // Save the shortcut
+        }
+
+        private void drag(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                DragMove();
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }
