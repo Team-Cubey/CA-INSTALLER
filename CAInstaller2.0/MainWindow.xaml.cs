@@ -46,7 +46,7 @@ namespace CAInstaller2._0
             else
             {
                 aTimer.Enabled = false;
-                aainfo.Text = "There is not enough space on the selected drive (600mb). Please make some space and restart the installer, or select another drive";
+                aainfo.Text = "There is not enough space on the selected drive (" + Drive.AvailableFreeSpace / 1000000 + "mb/600mb), please clear some space or select another drive";
                 enoughspace = false;
             }
         }
@@ -79,7 +79,7 @@ namespace CAInstaller2._0
                 else
                 {
                     aTimer.Enabled = false;
-                    aainfo.Text = "There is not enough space on the selected drive (600mb). Please make some space and restart the installer, or select another drive";
+                    aainfo.Text = "There is not enough space on the selected drive (" + Drive.AvailableFreeSpace / 1000000 + "mb/600mb), please clear some space or select another drive";
                     enoughspace = false;
                 }
             }
@@ -114,7 +114,7 @@ namespace CAInstaller2._0
 
             WebClient webClient = new WebClient();
             System.IO.File.Delete(temp + @"ca-latest.txt");
-            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-demo.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
 
             WebClient webClient2 = new WebClient();
             webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
@@ -160,7 +160,7 @@ namespace CAInstaller2._0
                     Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
                 }
                 else {
-                    // wip the MONO version with il2cpp just in case lol
+                    // wipe the MONO version with il2cpp just in case lol
                     System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
                     System.IO.File.Delete(installloc + @"\GameAssembly.dll");
                     System.IO.File.Delete(installloc + @"\baselib.dll");
@@ -180,10 +180,14 @@ namespace CAInstaller2._0
                 aainfo.Text = "Unzipping to " + installloc + "...";
             });
             ZipFile.ExtractToDirectory(temp + @"ca.zip", installloc); // extract it to the install location
-            System.IO.File.Move(temp + @"ca.ico", appdata + @"\cubeyrewritten\ca.ico"); // move the ico
+            if(System.IO.File.Exists(installloc + @"\ca.ico"))
+            {
+                System.IO.File.Delete(installloc + @"\ca.ico");
+            }
+            System.IO.File.Move(temp + @"ca.ico", installloc + @"\ca.ico"); // move the ico
 
             System.IO.File.Delete(appdata + @"\Microsoft\Windows\Start Menu\Programs\Cubey's Adventures.lnk");
-            CreateShortcut("Cubey's Adventures", appdata + @"\Microsoft\Windows\Start Menu\Programs", appdata + @"\cubeyrewritten\Cubey's Adventures.exe"); // create a shortcut
+            CreateShortcut("Cubey's Adventures Demo", appdata + @"\Microsoft\Windows\Start Menu\Programs", installloc + @"\Cubey's Adventures.exe"); // create a shortcut
 
             this.Dispatcher.Invoke(() =>
             {
