@@ -10,6 +10,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shell;
 
 namespace CAInstaller2._0
 {
@@ -130,6 +131,13 @@ namespace CAInstaller2._0
             {
                 progrss.Value = e.ProgressPercentage; // update progress bar
                 aainfo.Text = "Downloading the latest version: " + e.ProgressPercentage + "%"; // update the text
+
+                int maxProgressbarValue = 100;
+                var taskbarInstance = Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance;
+                taskbarInstance.SetProgressState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal);
+
+                
+                taskbarInstance.SetProgressValue(e.ProgressPercentage, maxProgressbarValue);
             });
         }
 
