@@ -158,20 +158,64 @@ namespace CAInstaller2._0
         {
             string temp = System.IO.Path.GetTempPath(); // get temp
 
-            WebClient webClient3 = new WebClient();
-            webClient3.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-icon.ico"), temp + @"ca.ico"); // download the ico for the shortcut
+            try
+            {
+                WebClient webClient3 = new WebClient();
+                webClient3.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-icon.ico"), temp + @"ca.ico"); // download the ico for the shortcut
+            }
+            catch
+            {
+                MessageBox.Show("Could not connect to servers. The installer will now quit. (Error code #61)", "Error", MessageBoxButton.OK);
+                Environment.Exit(61);
+            }
 
-            WebClient webClient = new WebClient();
-            System.IO.File.Delete(temp + @"ca-latest.txt");
-            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest-demo.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            try
+            {
+                WebClient webClient = new WebClient();
+                System.IO.File.Delete(temp + @"ca-latest.txt");
+                webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-demo.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            }
+            catch
+            {
+                MessageBox.Show("Could not connect to servers. The installer will now quit. (Error code #62)", "Error", MessageBoxButton.OK);
+                Environment.Exit(62);
+            }
 
             WebClient webClient2 = new WebClient();
-            webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
-            webClient2.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-            //MessageBox.Show(downloc[0]);
 
-            version = System.IO.File.ReadAllLines(temp + @"ca-latest.txt")[1];
-            string downloc = System.IO.File.ReadAllLines(temp + @"ca-latest.txt").First(); // get the link
+            try
+            {
+                webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
+                webClient2.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
+            }
+            catch
+            {
+                MessageBox.Show("Could not setup installation. The installer will now quit. (Error code #63)", "Error", MessageBoxButton.OK);
+                Environment.Exit(63);
+            }
+
+            try
+            {
+                version = System.IO.File.ReadAllLines(temp + @"ca-latest.txt")[1];
+            }
+            catch
+            {
+                MessageBox.Show("Could not grab latest version. The installer will now quit. (Error code #60)", "Error", MessageBoxButton.OK);
+                Environment.Exit(60);
+            }
+
+            string downloc = "";
+
+            try
+            {
+                downloc = System.IO.File.ReadAllLines(temp + @"ca-latest.txt").First(); // get the link
+            }
+            catch
+            {
+                MessageBox.Show("Could not download game files. The installer will now quit. (Error code #64)", "Error", MessageBoxButton.OK);
+                Environment.Exit(64);
+            }
+
             webClient2.DownloadFileAsync(new Uri(downloc), temp + @"ca.zip"); // download latest version
         }
 
@@ -209,13 +253,21 @@ namespace CAInstaller2._0
                 if (!Directory.Exists(installloc + @"\MonoBleedingEdge"))
                 {
                     // wipe the IL2CPP version
-                    System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
-                    System.IO.File.Delete(installloc + @"\GameAssembly.dll");
-                    System.IO.File.Delete(installloc + @"\baselib.dll");
-                    System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
-                    System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
-                    System.IO.File.Delete(installloc + @"\ca.ico");
-                    Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
+                    try
+                    {
+                        System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
+                        System.IO.File.Delete(installloc + @"\GameAssembly.dll");
+                        System.IO.File.Delete(installloc + @"\baselib.dll");
+                        System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
+                        System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
+                        System.IO.File.Delete(installloc + @"\ca.ico");
+                        Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("The old installation could not be deleted. The installer will now quit. (Error code #5)", "Error", MessageBoxButton.OK);
+                        Environment.Exit(60);
+                    }
                 }
                 else {
                     // wipe the MONO version with il2cpp just in case lol
@@ -237,15 +289,32 @@ namespace CAInstaller2._0
             {
                 aainfo.Text = "Unzipping to " + installloc + "...";
             });
-            ZipFile.ExtractToDirectory(temp + @"ca.zip", installloc); // extract it to the install location
-            if(System.IO.File.Exists(installloc + @"\Cubey's Adventures.ico"))
+            try
+            {
+                ZipFile.ExtractToDirectory(temp + @"ca.zip", installloc); // extract it to the install location
+            }
+            catch
+            {
+                MessageBox.Show("The game files could not be extracted. The installer will now quit. (Error code #6)", "Error", MessageBoxButton.OK);
+                Environment.Exit(60);
+            }
+
+            if (System.IO.File.Exists(installloc + @"\Cubey's Adventures.ico"))
             {
                 System.IO.File.Delete(installloc + @"\Cubey's Adventures.ico");
             }
+
             System.IO.File.Move(temp + @"ca.ico", installloc + @"\Cubey's Adventures.ico"); // move the ico
 
             System.IO.File.Delete(appdata + @"\Microsoft\Windows\Start Menu\Programs\Cubey's Adventures.lnk");
-            CreateShortcut("Cubey's Adventures", appdata + @"\Microsoft\Windows\Start Menu\Programs", installloc + @"\Cubey's Adventures.exe"); // create a shortcut
+            try
+            {
+                CreateShortcut("Cubey's Adventures", appdata + @"\Microsoft\Windows\Start Menu\Programs", installloc + @"\Cubey's Adventures.exe"); // create a shortcut
+            }
+            catch
+            {
+                MessageBox.Show("Start menu shortcut could not be made. (Error code #6)", "Error", MessageBoxButton.OK);
+            }
 
             this.Dispatcher.Invoke(() =>
             {
@@ -254,15 +323,22 @@ namespace CAInstaller2._0
 
             Process.Start(installloc + @"\Cubey's Adventures.exe"); // start game
 
-            Microsoft.Win32.RegistryKey key;
-            key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
-            key.SetValue("location", installloc);
-            key.Close();
+            try
+            {
+                Microsoft.Win32.RegistryKey key;
+                key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
+                key.SetValue("location", installloc);
+                key.Close();
 
-            Microsoft.Win32.RegistryKey key2;
-            key2 = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
-            key2.SetValue("version", version);
-            key2.Close();
+                Microsoft.Win32.RegistryKey key2;
+                key2 = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
+                key2.SetValue("version", version);
+                key2.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Could not save installation information. (Error code #7)", "Error", MessageBoxButton.OK);
+            }
 
             System.IO.File.Delete(temp + @"ca.zip"); // then remove zip
 
@@ -278,6 +354,11 @@ namespace CAInstaller2._0
 
         public void CreateShortcut(string shortcutName, string shortcutPath, string targetFileLocation)
         {
+            if(System.IO.File.Exists(System.IO.Path.Combine(shortcutPath, shortcutName + ".lnk")))
+            {
+                System.IO.File.Delete(System.IO.Path.Combine(shortcutPath, shortcutName + ".lnk"));
+            }
+
             string shortcutLocation = System.IO.Path.Combine(shortcutPath, shortcutName + ".lnk");
             WshShell shell = new WshShell();
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
