@@ -12,6 +12,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shell;
 using Microsoft.Win32;
+using System.Linq;
+using Microsoft.WindowsAPICodePack.Shell.Interop;
 
 namespace CAInstaller2._0
 {
@@ -30,6 +32,7 @@ namespace CAInstaller2._0
         public int countdown;
         private Border myBorder1;
         public bool enoughspace = true;
+        public string version;
 
         public MainWindow()
         {
@@ -160,14 +163,16 @@ namespace CAInstaller2._0
 
             WebClient webClient = new WebClient();
             System.IO.File.Delete(temp + @"ca-latest.txt");
-            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest-demo.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
 
             WebClient webClient2 = new WebClient();
             webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
             webClient2.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-            string[] downloc = System.IO.File.ReadAllLines(temp + @"ca-latest.txt"); // get the link
-            webClient2.DownloadFileAsync(new Uri(downloc[0]), temp + @"ca.zip"); // download latest version
             //MessageBox.Show(downloc[0]);
+
+            version = System.IO.File.ReadAllLines(temp + @"ca-latest.txt")[1];
+            string downloc = System.IO.File.ReadAllLines(temp + @"ca-latest.txt").First(); // get the link
+            webClient2.DownloadFileAsync(new Uri(downloc), temp + @"ca.zip"); // download latest version
         }
 
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -175,7 +180,7 @@ namespace CAInstaller2._0
             this.Dispatcher.Invoke(() =>
             {
                 progrss.Value = e.ProgressPercentage; // update progress bar
-                aainfo.Text = "Downloading the latest version: " + e.ProgressPercentage + "%"; // update the text
+                aainfo.Text = "Downloading the latest version (" + version + "): " + e.ProgressPercentage + "%"; // update the text
 
                 int maxProgressbarValue = 100;
                 var taskbarInstance = Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance;
@@ -253,6 +258,11 @@ namespace CAInstaller2._0
             key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
             key.SetValue("location", installloc);
             key.Close();
+
+            Microsoft.Win32.RegistryKey key2;
+            key2 = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
+            key2.SetValue("version", version);
+            key2.Close();
 
             System.IO.File.Delete(temp + @"ca.zip"); // then remove zip
 
