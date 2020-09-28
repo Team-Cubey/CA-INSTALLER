@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shell;
+using Microsoft.Win32;
 
 namespace CAInstaller2._0
 {
@@ -25,7 +26,7 @@ namespace CAInstaller2._0
     public partial class MainWindow : Window
     {
         public string installloc;
-        private static System.Timers.Timer aTimer;
+        private static Timer aTimer;
         public int countdown;
         private Border myBorder1;
         public bool enoughspace = true;
@@ -35,18 +36,52 @@ namespace CAInstaller2._0
             InitializeComponent();
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // gets appdata for later
 
-            installloc = appdata + @"\cubeyrewritten\"; // sets the install location
+            // commented for registry: installloc = appdata + @"\cubeyrewritten\"; // sets the install location
+            // installloc = (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Cubey's Adventures", "install", appdata + @"\cubeyrewritten\");
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey("Software\\Team Cubey\\Cubey's Adventures"))
+            {
+                if (key != null)
+                {
+                    Object o = key.GetValue("location");
+                    if (o != null)
+                    {
+                        installloc = (o as String);
+                    }
+                    else
+                    {
+                        installloc = appdata + @"\cubeyrewritten\";
+                    }
+                }
+                else
+                {
+                    installloc = appdata + @"\cubeyrewritten\";
+                }
+            }
+
             DriveInfo Drive = new DriveInfo(installloc.Substring(0, 1));
             
             if (Drive.AvailableFreeSpace > 600000000)
             {
                 SetTimer(); // starts the countdown...
                 countdown = 6; // for 6 seconds
-                aainfo.Text = "Installing to " + installloc + "\nin " + countdown + " seconds"; // sets the text first time
+                if(System.IO.File.Exists(installloc + @"\Cubey's Adventures.exe")){
+                    aainfo.Text = "Updating/Reinstalling your Cubey's Adventures install\nin " + countdown + " seconds";
+                }else
+                {
+                    aainfo.Text = "Installing to " + installloc + "\nin " + countdown + " seconds"; // sets the text first time
+                }
             }
             else
             {
-                aTimer.Enabled = false;
+                try
+                {
+                    aTimer.Enabled = false;
+                }
+                catch
+                {
+                    
+                }
                 aainfo.Text = "There is not enough space on the selected drive (" + Drive.AvailableFreeSpace / 1000000 + "mb/600mb), please clear some space or select another drive";
                 enoughspace = false;
             }
@@ -91,8 +126,18 @@ namespace CAInstaller2._0
             countdown -= 1;
             this.Dispatcher.Invoke(() =>
             {
-                aainfo.Text = "Installing to " + installloc + "\nin " + countdown + " seconds"; // set the text
+                if (System.IO.File.Exists(installloc + @"\Cubey's Adventures.exe"))
+                {
+                    aainfo.Text = "Updating/Reinstalling your Cubey's Adventures install\nin " + countdown + " seconds";
+                }
+                else
+                {
+                    aainfo.Text = "Installing to " + installloc + "\nin " + countdown + " seconds"; // sets the text first time
+                }
             });
+
+
+
             if(countdown == 0){ // when the timer is done
                 aTimer.Enabled = false; // disable timer
                 
@@ -115,7 +160,7 @@ namespace CAInstaller2._0
 
             WebClient webClient = new WebClient();
             System.IO.File.Delete(temp + @"ca-latest.txt");
-            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-demo.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+            webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
 
             WebClient webClient2 = new WebClient();
             webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedCA);
@@ -188,14 +233,14 @@ namespace CAInstaller2._0
                 aainfo.Text = "Unzipping to " + installloc + "...";
             });
             ZipFile.ExtractToDirectory(temp + @"ca.zip", installloc); // extract it to the install location
-            if(System.IO.File.Exists(installloc + @"\ca.ico"))
+            if(System.IO.File.Exists(installloc + @"\Cubey's Adventures.ico"))
             {
-                System.IO.File.Delete(installloc + @"\ca.ico");
+                System.IO.File.Delete(installloc + @"\Cubey's Adventures.ico");
             }
-            System.IO.File.Move(temp + @"ca.ico", installloc + @"\ca.ico"); // move the ico
+            System.IO.File.Move(temp + @"ca.ico", installloc + @"\Cubey's Adventures.ico"); // move the ico
 
             System.IO.File.Delete(appdata + @"\Microsoft\Windows\Start Menu\Programs\Cubey's Adventures.lnk");
-            CreateShortcut("Cubey's Adventures Demo", appdata + @"\Microsoft\Windows\Start Menu\Programs", installloc + @"\Cubey's Adventures.exe"); // create a shortcut
+            CreateShortcut("Cubey's Adventures", appdata + @"\Microsoft\Windows\Start Menu\Programs", installloc + @"\Cubey's Adventures.exe"); // create a shortcut
 
             this.Dispatcher.Invoke(() =>
             {
@@ -204,7 +249,19 @@ namespace CAInstaller2._0
 
             Process.Start(installloc + @"\Cubey's Adventures.exe"); // start game
 
+            Microsoft.Win32.RegistryKey key;
+            key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Team Cubey\\Cubey's Adventures");
+            key.SetValue("location", installloc);
+            key.Close();
+
             System.IO.File.Delete(temp + @"ca.zip"); // then remove zip
+
+            string src = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            string dest = installloc + "install.exe";
+            if (!System.IO.File.Exists(dest))
+            {
+                System.IO.File.Copy(src, dest);
+            }
 
             System.Environment.Exit(1); // exit
         }
@@ -215,8 +272,8 @@ namespace CAInstaller2._0
             WshShell shell = new WshShell();
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
                 
-            shortcut.Description = "Cubey's Adventures";   // The description of the shortcut
-            shortcut.IconLocation = installloc + @"\ca.ico";           // The icon of the shortcut
+            shortcut.Description = "Cubey's Adventures (Private Beta)";   // The description of the shortcut
+            shortcut.IconLocation = installloc + @"\Cubey's Adventures.ico";           // The icon of the shortcut
             shortcut.TargetPath = targetFileLocation;                 // The path of the file that will launch when the shortcut is run
             shortcut.Save();                                    // Save the shortcut
         }
