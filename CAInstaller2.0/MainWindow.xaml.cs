@@ -173,7 +173,7 @@ namespace CAInstaller2._0
             {
                 WebClient webClient = new WebClient();
                 System.IO.File.Delete(temp + @"ca-latest.txt");
-                webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-demo.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
+                webClient.DownloadFile(new Uri("https://upload.hubza.co.uk/i/ca-latest-private-beta.txt"), temp + @"ca-latest.txt"); // get the latest version, this is usually just a link to another download
             }
             catch
             {
