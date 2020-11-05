@@ -250,34 +250,14 @@ namespace CAInstaller2._0
 
             if (Directory.Exists(installloc)) // checks if the install location exists, then deletes the cubey files
             {
-                if (!Directory.Exists(installloc + @"\MonoBleedingEdge"))
+                if (System.IO.File.Exists(installloc + @"\Cubey's Adventures.exe"))
                 {
-                    // wipe the IL2CPP version
-                    try
-                    {
-                        System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
-                        System.IO.File.Delete(installloc + @"\GameAssembly.dll");
-                        System.IO.File.Delete(installloc + @"\baselib.dll");
-                        System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
-                        System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
-                        System.IO.File.Delete(installloc + @"\ca.ico");
-                        Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("The old installation could not be deleted. The installer will now quit. (Error code #5)", "Error", MessageBoxButton.OK);
-                        Environment.Exit(60);
-                    }
-                }
-                else {
-                    // wipe the MONO version with il2cpp just in case lol
                     System.IO.File.Delete(installloc + @"\UnityPlayer.dll");
                     System.IO.File.Delete(installloc + @"\GameAssembly.dll");
                     System.IO.File.Delete(installloc + @"\baselib.dll");
                     System.IO.File.Delete(installloc + @"\Cubey's Adventures.exe");
                     System.IO.File.Delete(installloc + @"\UnityCrashHandler64.exe");
                     System.IO.File.Delete(installloc + @"\ca.ico");
-                    Directory.Delete(installloc + @"\MonoBleedingEdge", true);
                     Directory.Delete(installloc + @"\Cubey's Adventures_Data", true);
                 }
             }
